@@ -62,7 +62,7 @@ Each object lives under a unique key, so you never dig through folders. Ask for 
 > Scale from kilobytes to petabytes.
 @ Your Bucket | Pay as you go
 No servers to babysit. Store a little, store a lot, and the bucket just grows with you.`;
-let dest=null,rec=null,ending=false,aud=null,loading=false,gen=0,lvl=0,AX=null,an=null,wc=[],cache={},BR='',scenes=[],si=0,T=0,run=false,wi=-1,words=[],starts=[],gotB=false,voices=[];
+let VT=null,off=false,dest=null,rec=null,ending=false,aud=null,loading=false,gen=0,lvl=0,AX=null,an=null,wc=[],cache={},BR='',scenes=[],si=0,T=0,run=false,wi=-1,words=[],starts=[],gotB=false,voices=[];
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),pr=(a,d)=>cl((T-a)/d),bk=x=>1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2),cu=x=>1-Math.pow(1-x,3);
 function parse(){
  scenes=$('sc').value.split(/\n\s*\n/).map(b=>{const s={k:'',t:'',sub:'',h:'',cards:[],steps:[],pts:[],vs:null,stat:null,hub:'',tag:'',say:''};
@@ -102,7 +102,7 @@ function char(time){
 const ico=f=>/png|jpg|gif/.test(f)?'🖼️':/mp4|mov/.test(f)?'🎬':/zip/.test(f)?'📦':/pdf/.test(f)?'📕':/json/.test(f)?'🧾':'📄';
 function draw(){
  const s=scenes[si];g.fillStyle=PA;g.fillRect(0,0,W,H);if(!s)return;
- const tm=performance.now()/1000;
+ const tm=VT!=null?VT:performance.now()/1000;
  g.fillStyle='#cfd2d6';g.fillRect(30,30,W-60,2);
  txt(s.k.toUpperCase()+' / 0'+(si+1),30,72,'13px ui-monospace,monospace','#6b7580');
  g.save();g.globalAlpha=pr(.1,.5);g.translate(0,(1-cu(pr(.1,.5)))*20);txt(s.t,30,138,'bold 40px system-ui,sans-serif',INK);g.restore();
@@ -136,7 +136,7 @@ const oy=s.h?330:290,F='system-ui,sans-serif';
  g.fillStyle='#d5d8dc';g.fillRect(30,940,W-60,3);g.fillStyle=BL;g.fillRect(30,940,(W-60)*prog,3);
 }
 let prev=performance.now();
-function loop(n){const dt=(n-prev)/1000;prev=n;try{if(run){T+=dt;
+function loop(n){const dt=(n-prev)/1000;prev=n;if(off){requestAnimationFrame(loop);return}try{if(run){T+=dt;
  if(aud){const f=cl((AX.currentTime-aud.t0)/aud.dur);wi=Math.max(0,wc.findIndex(c=>c/wc[wc.length-1]>=f));const d=new Uint8Array(an.fftSize);an.getByteTimeDomainData(d);let q=0;for(const v of d)q+=((v-128)/128)**2;lvl=lvl*.5+cl(Math.sqrt(q/d.length)*6)*.5}
  else if(!loading){if(performance.now()-lastB>1500)wi=Math.min(words.length-1,Math.floor(T/(.4/(+$('rt').value))));if(T>words.length*.45+1.5&&!SS.speaking)next();if(T>words.length*.7+10)next()}}
  draw()}catch(e){$('er').textContent='Error: '+e.message}requestAnimationFrame(loop)}
@@ -220,7 +220,7 @@ $('tt').onclick=async()=>{try{AC();st('Testing voice server…');const b=await f
 try{['tu','tk'].forEach(k=>{$(k).value=localStorage.getItem('irv_'+k)||'';$(k).oninput=()=>localStorage.setItem('irv_'+k,$(k).value)})}catch(e){}
 if(!window.claude){$('gn').disabled=true;st('AI script writer only works inside Claude. Paste a script under "Edit script manually".')}
 const pickMime=()=>['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m));
-$('rc').onclick=()=>{
+const recLive=()=>{
  if(run)return;parse();if(!scenes.length)return;
  if(!cfg().u){st("Add your voice server first. The browser voice can't be recorded.");return}
  const mt=pickMime();if(!mt){st("This browser can't record video. Try Chrome or Safari.");return}
@@ -229,5 +229,42 @@ $('rc').onclick=()=>{
  rec.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
  rec.onstop=()=>{const ext=mt.includes('mp4')?'mp4':'webm',u=URL.createObjectURL(new Blob(ch,{type:mt.split(';')[0]})),a=$('dl');a.href=u;a.download='irvin-video.'+ext;a.textContent='⬇ Download irvin-video.'+ext;a.style.display='inline-block';st('Video ready ✓');rec=null;try{a.click()}catch(e){}};
  $('dl').style.display='none';rec.start(500);$('go').click();st('Recording… keep this tab open until it finishes.')};
+const sleep=()=>new Promise(r=>setTimeout(r));
+async function loadMux(){if(window.Mp4Muxer)return;for(const v of ['5.1.3','5.0.1','5.1.0']){try{await new Promise((ok,no)=>{const e=document.createElement('script');e.src='https://cdn.jsdelivr.net/npm/mp4-muxer@'+v+'/build/mp4-muxer.js';e.onload=ok;e.onerror=no;document.head.appendChild(e)});if(window.Mp4Muxer)return}catch(e){}}throw new Error('Could not load the MP4 muxer (internet needed)')}
+async function mk(){
+ if(run||off)return;parse();if(!scenes.length)return;
+ if(!cfg().u){st("Add your voice server first. The browser voice can't be saved.");return}
+ $('rc').disabled=true;$('dl').style.display='none';
+ try{
+  AC();await loadMux();
+  const bufs=[];for(let i=0;i<scenes.length;i++){st('Getting voice '+(i+1)+'/'+scenes.length+'…');bufs.push(await getAudio(i))}
+  const sr=bufs[0].sampleRate,FPS=30,Wd=540,Ht=960,t0=[];let tot=.4;
+  bufs.forEach(b=>{t0.push(tot);tot+=b.duration+.35});tot+=.3;
+  const len=Math.ceil(tot*sr),pcm=new Float32Array(len);bufs.forEach((b,i)=>pcm.set(b.getChannelData(0),Math.round(t0[i]*sr)));
+  const acf=c=>({codec:c,sampleRate:sr,numberOfChannels:1,bitrate:128000});let ac='mp4a.40.2',am='aac';
+  if(!(await AudioEncoder.isConfigSupported(acf(ac))).supported){ac='opus';am='opus';if(!(await AudioEncoder.isConfigSupported(acf(ac))).supported)throw new Error('No audio encoder in this browser')}
+  let vc=null;for(const c of ['avc1.640028','avc1.4d0028','avc1.42E01F']){const cf={codec:c,width:Wd,height:Ht,bitrate:4e6,framerate:FPS};if((await VideoEncoder.isConfigSupported(cf)).supported){vc=cf;break}}
+  if(!vc)throw new Error('No H.264 encoder in this browser');
+  const mux=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),video:{codec:'avc',width:Wd,height:Ht},audio:{codec:am,numberOfChannels:1,sampleRate:sr},fastStart:'in-memory'});
+  const ve=new VideoEncoder({output:(c,m)=>mux.addVideoChunk(c,m),error:e=>st('Encoder error: '+e.message)}),ae=new AudioEncoder({output:(c,m)=>mux.addAudioChunk(c,m),error:e=>st('Encoder error: '+e.message)});
+  ve.configure(vc);ae.configure(acf(ac));
+  for(let o=0,k=0;o<len;o+=4096,k++){const n=Math.min(4096,len-o),d=new AudioData({format:'f32-planar',sampleRate:sr,numberOfFrames:n,numberOfChannels:1,timestamp:Math.round(o/sr*1e6),data:pcm.subarray(o,o+n)});ae.encode(d);d.close();if(k%40==0)await sleep()}
+  off=true;run=true;aud={};loading=false;
+  const nf=Math.ceil(tot*FPS);let cs=-1;
+  for(let f=0;f<nf;f++){
+   const tt=f/FPS;let i=0;while(i+1<scenes.length&&tt>=t0[i+1])i++;const T0=Math.max(0,tt-t0[i]),B=bufs[i];
+   if(i!=cs){cs=i;si=i;words=scenes[i].say.split(/\s+/);wc=[];let a=0;words.forEach(w=>{a+=w.length+1;wc.push(a)})}
+   T=T0;wi=Math.max(0,wc.findIndex(c=>c/wc[wc.length-1]>=cl(T0/B.duration)));
+   let q=0,c=0;if(T0<B.duration){const o0=Math.floor((t0[i]+T0)*sr),w=Math.floor(sr/FPS);for(let k=o0;k<o0+w&&k<len;k++){q+=pcm[k]*pcm[k];c++}}
+   lvl=lvl*.5+cl(Math.sqrt(q/(c||1))*6)*.5;
+   VT=tt;draw();
+   const fr=new VideoFrame($('c'),{timestamp:Math.round(f*1e6/FPS),duration:Math.round(1e6/FPS)});ve.encode(fr,{keyFrame:f%60==0});fr.close();
+   if(f%8==0){st('Rendering video '+Math.round(f/nf*100)+'%');await sleep();while(ve.encodeQueueSize>20)await sleep()}
+  }
+  await ve.flush();await ae.flush();mux.finalize();
+  const a=$('dl');a.href=URL.createObjectURL(new Blob([mux.target.buffer],{type:'video/mp4'}));a.download='irvin-video.mp4';a.textContent='⬇ Download irvin-video.mp4';a.style.display='inline-block';st('Video ready ✓ (picture + voice in one MP4)');try{a.click()}catch(e){}
+ }catch(e){st('Could not save video: '+(e.message||e))}
+ VT=null;off=false;run=false;aud=null;si=0;T=99;wi=-1;words=[];lvl=0;$('rc').disabled=false}
+$('rc').onclick=()=>window.VideoEncoder&&window.AudioEncoder?mk():recLive();
 parse();T=99;
 </script></body></html>
