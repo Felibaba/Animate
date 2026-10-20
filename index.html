@@ -15,7 +15,7 @@ button,select,textarea{font:inherit;color:var(--tx);background:var(--bg);border:
 button.a{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
 textarea{width:100%;height:260px;font:12.5px/1.45 ui-monospace,Menlo,monospace;resize:vertical}
 label{font-size:12px;color:var(--mu);display:flex;gap:6px;align-items:center}input[type=range]{accent-color:var(--ac)}
-small{color:var(--mu)}
+small{color:var(--mu)}.ind{animation:pu 1s infinite alternate}@keyframes pu{from{opacity:.3}to{opacity:1}}.dlb{background:var(--ac);color:#fff!important;padding:7px 12px;border-radius:8px;text-decoration:none}button:disabled{opacity:.5}
 </style></head><body>
 <h1>Irvin <span style="color:var(--ac)">· explainer studio</span></h1>
 <div class="p"><b>What should Irvin talk about?</b>
@@ -27,6 +27,7 @@ small{color:var(--mu)}
 <input type="text" id="ct" placeholder="Call to action, e.g. Book a free call at …" style="width:100%"></details>
 <small id="gs" style="display:block;margin-top:6px"></small></div>
 <div class="p"><canvas id="c" width="540" height="960"></canvas></div>
+<div class="p" id="sp" style="display:none"><div class="row" style="justify-content:space-between"><b id="sl"></b><span id="sx" style="color:var(--mu)"></span></div><div style="height:8px;background:var(--bg);border-radius:6px;margin:8px 0;overflow:hidden"><div id="sb" style="height:100%;width:0;transition:width .2s"></div></div><small id="sd"></small></div>
 <div class="p row"><button class="a" id="go">▶ Play</button><button id="rc">⏺ Save video</button><a id="dl" style="display:none;color:var(--ac);font-weight:600"></a><select id="vo"></select><label>Speed<input type="range" id="rt" min=".7" max="1.4" step=".05" value="1" style="width:80px"></label></div>
 <details class="p" open><summary><b>🔊 Voice server</b> <small>(your TTS)</small></summary>
 <input type="text" id="tu" placeholder="https://YOUR-SERVER.onrender.com" style="width:100%;margin:6px 0 4px">
@@ -141,20 +142,23 @@ function loop(n){const dt=(n-prev)/1000;prev=n;if(off){requestAnimationFrame(loo
  else if(!loading){if(performance.now()-lastB>1500)wi=Math.min(words.length-1,Math.floor(T/(.4/(+$('rt').value))));if(T>words.length*.45+1.5&&!SS.speaking)next();if(T>words.length*.7+10)next()}}
  draw()}catch(e){$('er').textContent='Error: '+e.message}requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
-const st=m=>$('gs').textContent=m;
+const ep=()=>{const u=cfg().u;return /\/tts$/i.test(u)?u:u+'/tts'};
+function explain(e){const m=String(e&&e.message||e);if(/^40[45]/.test(m))return "Your server doesn't accept POST at "+ep()+". Use its base address (https://name.onrender.com) or the full /tts address.";if(/^40[13]/.test(m))return 'The server rejected the key. Check the API key.';if(/abort/i.test(m))return 'The server took over 90 s. It may have been asleep, so try again.';if(/failed to fetch|networkerror|load failed/i.test(m))return "Couldn't reach "+ep()+". Check the URL, that the server is awake, and that it allows this page (CORS).";return m}
+function status(k,t,d,p){const e=$('sp'),b=$('sb');e.style.display='block';$('sl').textContent=t;$('sd').textContent=d||'';b.style.width=p==null?'100%':p+'%';b.className=p==null&&k=='work'?'ind':'';$('sx').textContent=p==null?'':Math.round(p)+'%';const c=k=='err'?'#e03131':k=='ok'?'#2f9e44':'var(--ac)';e.style.borderColor=k=='work'?'var(--bd)':c;b.style.background=c;$('sl').style.color=k=='work'?'var(--tx)':c}
+const st=m=>{if(!m){$('sp').style.display='none';return}status(/fail|error|could not|can't|add your/i.test(m)?'err':/✓|ready|works/i.test(m)?'ok':'work',m)};
 const cfg=()=>({u:$('tu').value.trim().replace(/\/+$/,''),k:$('tk').value.trim()});
 function AC(){if(!AX){AX=new(window.AudioContext||window.webkitAudioContext)();an=AX.createAnalyser();an.fftSize=512;an.connect(AX.destination);dest=AX.createMediaStreamDestination();an.connect(dest)}if(AX.state=='suspended')AX.resume()}
 async function fetchAudio(text){const c=cfg(),h={'Content-Type':'application/json'};if(c.k)h.Authorization=/^\w+\s/.test(c.k)?c.k:'Bearer '+c.k;
  const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),90000);
- try{const r=await fetch(c.u+'/tts',{method:'POST',headers:h,body:JSON.stringify({text,length_scale:cl(+(1/+$('rt').value).toFixed(2),.5,2),gap_ms:400}),signal:ctl.signal});
-  if(!r.ok)throw new Error(r.status+' '+(await r.text()).slice(0,120));return await AX.decodeAudioData(await r.arrayBuffer())}finally{clearTimeout(to)}}
+ try{const r=await fetch(ep(),{method:'POST',headers:h,body:JSON.stringify({text,length_scale:cl(+(1/+$('rt').value).toFixed(2),.5,2),gap_ms:400}),signal:ctl.signal});
+  if(!r.ok){const tx=await r.text();throw new Error(r.status+' '+(/<html|<!doctype/i.test(tx)?r.statusText||'error':tx.slice(0,120)))}return await AX.decodeAudioData(await r.arrayBuffer())}finally{clearTimeout(to)}}
 const getAudio=i=>{const k=scenes[i].say+'|'+$('rt').value;return cache[k]||(cache[k]=fetchAudio(scenes[i].say).catch(e=>{delete cache[k];throw e}))};
 function playBuf(buf,g0){const src=AX.createBufferSource();src.buffer=buf;src.connect(an);aud={dur:buf.duration,t0:AX.currentTime,src};src.onended=()=>{if(g0==gen){aud=null;lvl=0;setTimeout(()=>{if(g0==gen)next()},300)}};src.start()}
 async function begin(i){const g0=++gen;aud=null;si=i;T=0;gotB=false;const s=scenes[i];words=s.say.split(/\s+/);let p=0;starts=words.map(w=>{const a=s.say.indexOf(w,p);p=a+w.length;return a});wi=0;
 wc=[];let a2=0;words.forEach(w=>{a2+=w.length+1;wc.push(a2)});
  if(cfg().u){loading=true;if(!i)st('Loading voice… (a sleeping server can take a minute)');
   try{const buf=await getAudio(i);if(g0!=gen||!run)return;loading=false;st('');playBuf(buf,g0);if(i+1<scenes.length)getAudio(i+1).catch(()=>{});return}
-  catch(e){if(g0!=gen)return;loading=false;st('Voice server error: '+e.message+' (using browser voice)')}}
+  catch(e){if(g0!=gen)return;loading=false;status('err','Voice server problem · using the browser voice instead',explain(e))}}
  try{SS.cancel();const u=new SpeechSynthesisUtterance(s.say);u.rate=+$('rt').value;const v=voices[$('vo').value];if(v)u.voice=v;
   u.onboundary=e=>{gotB=true;lastB=performance.now();let k=0;while(k+1<starts.length&&starts[k+1]<=e.charIndex)k++;wi=k};
   u.onend=()=>{if(run&&si==i)setTimeout(next,350)};SS.speak(u)}catch(e){}}
@@ -216,9 +220,9 @@ $('gn').onclick=async()=>{
  try{const r=await smp(PROMPT(),{cache:false});$('sc').value=r.text.replace(/```\w*\n?|```/g,'').trim();parse();si=0;T=99;$('gs').textContent=scenes.length+' scenes ready. Press Play ▶ (edit the script below if you like).'}
  catch(e){$('gs').textContent='Could not create the video: '+(e.message||e.code||'try again')}
  $('gn').disabled=false};
-$('tt').onclick=async()=>{try{AC();st('Testing voice server…');const b=await fetchAudio("Hi, I'm Irvin. This is my new voice.");const x=AX.createBufferSource();x.buffer=b;x.connect(an);x.start();st('Voice works ✓')}catch(e){st('Voice test failed: '+e.message)}};
+$('tt').onclick=async()=>{$('tt').disabled=true;try{AC();status('work','Testing your voice server','Calling '+ep()+' (a sleeping server can take a minute)…',null);const b=await fetchAudio("Hi, I'm Irvin. This is my new voice.");const x=AX.createBufferSource();x.buffer=b;x.connect(an);x.start();status('ok','Voice server works ✓','Got '+b.duration.toFixed(1)+' s of audio. You should hear it now.',100)}catch(e){status('err','Voice test failed',explain(e))}$('tt').disabled=false};
 try{['tu','tk'].forEach(k=>{$(k).value=localStorage.getItem('irv_'+k)||'';$(k).oninput=()=>localStorage.setItem('irv_'+k,$(k).value)})}catch(e){}
-if(!window.claude){$('gn').disabled=true;st('AI script writer only works inside Claude. Paste a script under "Edit script manually".')}
+if(!window.claude){$('gn').disabled=true;$('gs').textContent='AI script writer only works inside Claude. Paste a script under "Edit script manually".'}
 const pickMime=()=>['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m));
 const recLive=()=>{
  if(run)return;parse();if(!scenes.length)return;
@@ -234,10 +238,10 @@ async function loadMux(){if(window.Mp4Muxer)return;for(const v of ['5.1.3','5.0.
 async function mk(){
  if(run||off)return;parse();if(!scenes.length)return;
  if(!cfg().u){st("Add your voice server first. The browser voice can't be saved.");return}
- $('rc').disabled=true;$('dl').style.display='none';
+ $('rc').disabled=$('go').disabled=true;$('dl').style.display='none';status('work','Step 1 of 3 · Getting voice','Contacting your voice server…',0);
  try{
   AC();await loadMux();
-  const bufs=[];for(let i=0;i<scenes.length;i++){st('Getting voice '+(i+1)+'/'+scenes.length+'…');bufs.push(await getAudio(i))}
+  const bufs=[];for(let i=0;i<scenes.length;i++){status('work','Step 1 of 3 · Getting voice (scene '+(i+1)+' of '+scenes.length+')','A sleeping server can take a minute on the first request.',i/scenes.length*100);bufs.push(await getAudio(i))}
   const sr=bufs[0].sampleRate,FPS=30,Wd=540,Ht=960,t0=[];let tot=.4;
   bufs.forEach(b=>{t0.push(tot);tot+=b.duration+.35});tot+=.3;
   const len=Math.ceil(tot*sr),pcm=new Float32Array(len);bufs.forEach((b,i)=>pcm.set(b.getChannelData(0),Math.round(t0[i]*sr)));
@@ -249,7 +253,7 @@ async function mk(){
   const ve=new VideoEncoder({output:(c,m)=>mux.addVideoChunk(c,m),error:e=>st('Encoder error: '+e.message)}),ae=new AudioEncoder({output:(c,m)=>mux.addAudioChunk(c,m),error:e=>st('Encoder error: '+e.message)});
   ve.configure(vc);ae.configure(acf(ac));
   for(let o=0,k=0;o<len;o+=4096,k++){const n=Math.min(4096,len-o),d=new AudioData({format:'f32-planar',sampleRate:sr,numberOfFrames:n,numberOfChannels:1,timestamp:Math.round(o/sr*1e6),data:pcm.subarray(o,o+n)});ae.encode(d);d.close();if(k%40==0)await sleep()}
-  off=true;run=true;aud={};loading=false;
+  status('work','Step 2 of 3 · Rendering video','Drawing frames. Keep this tab open.',0);off=true;run=true;aud={};loading=false;
   const nf=Math.ceil(tot*FPS);let cs=-1;
   for(let f=0;f<nf;f++){
    const tt=f/FPS;let i=0;while(i+1<scenes.length&&tt>=t0[i+1])i++;const T0=Math.max(0,tt-t0[i]),B=bufs[i];
@@ -259,12 +263,12 @@ async function mk(){
    lvl=lvl*.5+cl(Math.sqrt(q/(c||1))*6)*.5;
    VT=tt;draw();
    const fr=new VideoFrame($('c'),{timestamp:Math.round(f*1e6/FPS),duration:Math.round(1e6/FPS)});ve.encode(fr,{keyFrame:f%60==0});fr.close();
-   if(f%8==0){st('Rendering video '+Math.round(f/nf*100)+'%');await sleep();while(ve.encodeQueueSize>20)await sleep()}
+   if(f%8==0){status('work','Step 2 of 3 · Rendering video','Frame '+f+' of '+nf+'. Keep this tab open.',f/nf*100);await sleep();while(ve.encodeQueueSize>20)await sleep()}
   }
-  await ve.flush();await ae.flush();mux.finalize();
-  const a=$('dl');a.href=URL.createObjectURL(new Blob([mux.target.buffer],{type:'video/mp4'}));a.download='irvin-video.mp4';a.textContent='⬇ Download irvin-video.mp4';a.style.display='inline-block';st('Video ready ✓ (picture + voice in one MP4)');try{a.click()}catch(e){}
- }catch(e){st('Could not save video: '+(e.message||e))}
- VT=null;off=false;run=false;aud=null;si=0;T=99;wi=-1;words=[];lvl=0;$('rc').disabled=false}
+  status('work','Step 3 of 3 · Finishing MP4','Packing picture and voice into one file…',null);await ve.flush();await ae.flush();mux.finalize();
+  const a=$('dl');a.href=URL.createObjectURL(new Blob([mux.target.buffer],{type:'video/mp4'}));a.download='irvin-video.mp4';a.textContent='⬇ Download irvin-video.mp4';a.style.display='inline-block';{const mb=(mux.target.buffer.byteLength/1048575).toFixed(1),dd=Math.round(tot);status('ok','Video ready ✓',Math.floor(dd/60)+':'+String(dd%60).padStart(2,'0')+' · '+mb+' MB · picture and voice in one MP4. Tap Download.',100);a.className='dlb';a.scrollIntoView({block:'nearest'})}try{a.click()}catch(e){}
+ }catch(e){status('err','Could not save video',explain(e))}
+ VT=null;off=false;run=false;aud=null;si=0;T=99;wi=-1;words=[];lvl=0;$('rc').disabled=$('go').disabled=false}
 $('rc').onclick=()=>window.VideoEncoder&&window.AudioEncoder?mk():recLive();
 parse();T=99;
 </script></body></html>
