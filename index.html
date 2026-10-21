@@ -19,7 +19,7 @@ small{color:var(--mu)}.ind{animation:pu 1s infinite alternate}@keyframes pu{from
 </style></head><body>
 <h1>Irvin <span style="color:var(--ac)">· explainer studio</span></h1>
 <div class="p"><b>What should Irvin talk about?</b>
-<input type="text" id="tp" placeholder="Any topic, or what you want to sell…" style="width:100%;margin:6px 0">
+<textarea id="tp" style="height:80px;margin:6px 0" placeholder="Paste your product description, notes, or any text…"></textarea>
 <div class="row"><select id="gl"><option>Explain a topic</option><option>Sell my service</option><option>Share tips</option><option>Teach a how-to</option><option>Tell a story</option><option>Announce something</option></select><select id="nn"><option>3</option><option selected>4</option><option>5</option><option>6</option></select><small>scenes</small><button class="a" id="gn">✨ Create video</button></div>
 <details style="margin-top:6px"><summary><small>Your business, brand &amp; call to action (optional)</small></summary>
 <input type="text" id="br" placeholder="Brand or your name (shown under Irvin)" style="width:100%;margin:6px 0 4px">
@@ -33,8 +33,8 @@ small{color:var(--mu)}.ind{animation:pu 1s infinite alternate}@keyframes pu{from
 <input type="text" id="tu" placeholder="https://YOUR-SERVER.onrender.com" style="width:100%;margin:6px 0 4px">
 <input type="password" id="tk" placeholder="API key (optional)" style="width:100%;margin-bottom:6px">
 <div class="row"><button id="tt">Test voice</button><small>Empty URL = browser voice.</small></div></details>
-<details class="p"><summary><b>Edit script manually</b> <small>(optional)</small></summary> <small id="er" style="color:#e03131"></small><br><small>Blank line = new scene. Layouts: <code>+</code> steps · <code>-</code> bullets · <code>vs A: x; y | B: x; y</code> · <code>% 99% | label</code> · <code>[] cards</code> + <code>@ hub | tag</code>. Also <code>#</code> title · <code>&gt;</code> subtitle · <code>=</code> heading · <code>!</code> kicker. Other lines are spoken.</small>
-<div class="row" style="margin:6px 0"><select id="ex"><option value="cloud">Example: Cloud</option><option value="sci">Example: Science</option><option value="biz">Example: Business</option></select><button data-s="steps">+Steps</button><button data-s="list">+List</button><button data-s="vs">+Compare</button><button data-s="stat">+Stat</button></div>
+<details class="p"><summary><b>Edit script manually</b> <small>(optional)</small></summary> <small id="er" style="color:#e03131"></small><br><small>Blank line = new scene. Layouts: <code>+</code> steps · <code>-</code> bullets · <code>vs A: x; y | B: x; y</code> · <code>% 99% | label</code> · <code>[] 🎧 Item, 💻 Item</code> cards + <code>@ Name | tag | 🎧</code> hub. Also <code>#</code> title · <code>&gt;</code> subtitle · <code>=</code> heading · <code>!</code> kicker. Other lines are spoken.</small>
+<div class="row" style="margin:6px 0"><select id="ex"><option value="cloud">Example: Cloud</option><option value="prod">Example: Product</option><option value="sci">Example: Science</option><option value="biz">Example: Business</option></select><button data-s="steps">+Steps</button><button data-s="list">+List</button><button data-s="vs">+Compare</button><button data-s="stat">+Stat</button></div>
 <textarea id="sc" spellcheck="false"></textarea></details>
 <script>
 const SS=window.speechSynthesis||{speaking:false,cancel(){},speak(){},getVoices(){return[]}};
@@ -66,11 +66,11 @@ No servers to babysit. Store a little, store a lot, and the bucket just grows wi
 let VT=null,off=false,dest=null,rec=null,ending=false,aud=null,loading=false,gen=0,lvl=0,AX=null,an=null,wc=[],cache={},BR='',scenes=[],si=0,T=0,run=false,wi=-1,words=[],starts=[],gotB=false,voices=[];
 const cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),pr=(a,d)=>cl((T-a)/d),bk=x=>1+2.70158*Math.pow(x-1,3)+1.70158*Math.pow(x-1,2),cu=x=>1-Math.pow(1-x,3);
 function parse(){
- scenes=$('sc').value.split(/\n\s*\n/).map(b=>{const s={k:'',t:'',sub:'',h:'',cards:[],steps:[],pts:[],vs:null,stat:null,hub:'',tag:'',say:''};
+ scenes=$('sc').value.split(/\n\s*\n/).map(b=>{const s={k:'',t:'',sub:'',h:'',cards:[],steps:[],pts:[],vs:null,stat:null,hub:'',tag:'',ic:'',say:''};
   b.trim().split('\n').forEach(l=>{l=l.trim();if(l[0]=='#')s.t=l.slice(1).trim();else if(l[0]=='>')s.sub=l.slice(1).trim();else if(l[0]=='=')s.h=l.slice(1).trim();else if(l[0]=='!')s.k=l.slice(1).trim();
    else if(l[0]=='+')s.steps.push(l.slice(1).trim());else if(l[0]=='-')s.pts.push(l.slice(1).trim());else if(l[0]=='%'){const p=l.slice(1).split('|');s.stat=[p[0].trim(),(p[1]||'').trim()]}else if(l.startsWith('vs '))s.vs=l.slice(3).split('|').map(z=>{const a=z.split(':');return{t:a[0].trim(),i:(a[1]||'').split(';').map(q=>q.trim()).filter(Boolean)}});
    else if(l.startsWith('[]'))s.cards=l.slice(2).split(',').map(x=>x.trim()).filter(Boolean);
-   else if(l[0]=='@'){const p=l.slice(1).split('|');s.hub=p[0].trim();s.tag=(p[1]||'').trim()}else s.say+=(s.say?' ':'')+l});return s}).filter(s=>s.say||s.t);
+   else if(l[0]=='@'){const p=l.slice(1).split('|');s.hub=p[0].trim();s.tag=(p[1]||'').trim();s.ic=(p[2]||'').trim()}else s.say+=(s.say?' ':'')+l});return s}).filter(s=>s.say||s.t);
 }
 function wrap(t,w,f){g.font=f;const o=[];let l='';t.split(' ').forEach(x=>{const n=l?l+' '+x:x;if(g.measureText(n).width>w&&l){o.push(l);l=x}else l=n});o.push(l);return o}
 function txt(s,x,y,f,c,al='left'){g.font=f;g.fillStyle=c;g.textAlign=al;g.textBaseline='alphabetic';g.fillText(s,x,y)}
@@ -100,7 +100,8 @@ function char(time){
  g.restore();g.restore();
  txt((BR||'IRVIN').toUpperCase()+(BR?'':' EXPLAINS'),x,826,'11px ui-monospace,monospace','#6b7580','center');
 }
-const ico=f=>/png|jpg|gif/.test(f)?'🖼️':/mp4|mov/.test(f)?'🎬':/zip/.test(f)?'📦':/pdf/.test(f)?'📕':/json/.test(f)?'🧾':'📄';
+const EM=/^(\p{Extended_Pictographic}\uFE0F?)\s*(.*)$/u;
+const ico=f=>{const m=f.match(EM);return m?m[1]:/png|jpg|gif/.test(f)?'🖼️':/mp4|mov/.test(f)?'🎬':/zip/.test(f)?'📦':/pdf/.test(f)?'📕':/json/.test(f)?'🧾':'📄'};
 function draw(){
  const s=scenes[si];g.fillStyle=PA;g.fillRect(0,0,W,H);if(!s)return;
  const tm=VT!=null?VT:performance.now()/1000;
@@ -113,13 +114,13 @@ const o0=s.h?330:290,n0=s.cards.length,bt=s.steps.length?o0+(s.steps.length-1)*7
  if(s.h){g.globalAlpha=pr(.8,.4);txt(s.h,365,300,'bold 21px system-ui,sans-serif',INK,'center');g.globalAlpha=1}
  const n=s.cards.length,tw=n*64-4,sx=365-tw/2;
  s.cards.forEach((c,i)=>{const p=pr(1+i*.25,.5);if(!p)return;const y=330-(1-bk(p))*140;g.globalAlpha=cl(p*2);
-  rr(sx+i*64+2,y+4,60,62,10,'#c6d6ee');rr(sx+i*64,y,60,62,10,'#e6f0ff',BL);txt(ico(c),sx+i*64+30,y+32,'24px system-ui,sans-serif',INK,'center');txt(c,sx+i*64+30,y+53,'8.5px ui-monospace,monospace',INK,'center');g.globalAlpha=1});
+  rr(sx+i*64+2,y+4,60,62,10,'#c6d6ee');rr(sx+i*64,y,60,62,10,'#e6f0ff',BL);txt(ico(c),sx+i*64+30,y+32,'24px system-ui,sans-serif',INK,'center');txt((c.match(EM)?.[2]||c).slice(0,10),sx+i*64+30,y+53,'9px ui-monospace,monospace',INK,'center');g.globalAlpha=1});
  const hp=pr(.7,.6);
  if(s.hub){const hy=n?500:420;g.save();g.translate(365,hy+(1-cu(hp))*30);g.globalAlpha=hp;g.scale(.6+.4*bk(hp),.6+.4*bk(hp));
   if(n){g.strokeStyle=BL;g.lineWidth=2;g.beginPath();g.moveTo(0,-170+(0));g.lineTo(0,-170+pr(1+n*.25,.4)*160);g.stroke()}
-  g.fillStyle='#e8edf1';g.strokeStyle='#b4bec6';g.lineWidth=2;g.beginPath();g.moveTo(-62,-10);g.lineTo(-48,100);g.quadraticCurveTo(0,122,48,100);g.lineTo(62,-10);g.closePath();g.fill();g.stroke();
+  if(s.ic){g.beginPath();g.arc(0,40,70,0,7);g.fillStyle='#e6f0ff';g.fill();g.strokeStyle=BL;g.lineWidth=3;g.stroke();txt(s.ic,0,68,'72px system-ui,sans-serif',INK,'center')}else{g.fillStyle='#e8edf1';g.strokeStyle='#b4bec6';g.lineWidth=2;g.beginPath();g.moveTo(-62,-10);g.lineTo(-48,100);g.quadraticCurveTo(0,122,48,100);g.lineTo(62,-10);g.closePath();g.fill();g.stroke();
   g.fillStyle='#f8fafb';g.beginPath();g.ellipse(0,-10,62,16,0,0,7);g.fill();g.stroke();
-  rr(-20,32,40,40,6,'#6aa312');txt('☁',0,62,'26px system-ui,sans-serif','#fff','center');g.restore();
+  rr(-20,32,40,40,6,'#6aa312');txt('☁',0,62,'26px system-ui,sans-serif','#fff','center')}g.restore();
   g.globalAlpha=pr(1.2,.4);txt(s.hub,365,hy+150,'bold 21px system-ui,sans-serif',INK,'center');
   if(s.tag){const w=g.measureText(s.tag).width+60;rr(365-w/2,hy+172,w,44,10,'#fff',BL);txt(s.tag,365,hy+201,'bold 18px system-ui,sans-serif',BL,'center')}g.globalAlpha=1}
  g.restore();g.fillStyle=BL;g.fillRect(200,752,Math.min(310,pr(0,Math.max(4,words.length*.38))*310),2);
@@ -169,6 +170,26 @@ $('sc').oninput=()=>{if(!run){parse();si=0;T=99}};
 function vl(){try{voices=SS.getVoices().filter(v=>/^en/i.test(v.lang));$('vo').innerHTML=voices.map((v,i)=>`<option value="${i}">${v.name}</option>`).join('')||'<option>Default voice</option>'}catch(e){}}
 vl();try{SS.onvoiceschanged=vl}catch(e){}
 const EX={cloud:$('sc').value,
+prod:`! NEW PRODUCT
+# Meet the Pulse Buds
+> Wireless sound, all day.
+= What's in the box
+[] 🎧 Buds, 🔋 Case, 🔌 Cable, 📱 App
+@ Pulse Buds | 30-hour battery | 🎧
+Hey, I'm Irvin. Meet Pulse Buds: earbuds, a charging case, a cable, and an app, all in one small box.
+
+! NEW PRODUCT
+# Built for your day
+> Three things you'll love.
+[] 🎵 Sound, 🔇 Quiet, 💧 Splash
+@ Pulse Buds | Hear more, worry less | 🎧
+Rich sound, noise canceling for the commute, and splash protection for workouts.
+
+! NEW PRODUCT
+# Get yours today
+> Launch price ends Friday.
+% 30h | of battery from a single case
+Thirty hours of music on one charge. Grab yours before Friday.`,
 sci:`! SCIENCE
 # How rainbows form
 > Sunlight, water, and a little magic.
@@ -210,6 +231,9 @@ Then at most ONE layout per scene (vary them across scenes):
 - bullet (3-5 lines, max 8 words each)
 vs Side A: point; point | Side B: point; point
 % big number or short stat | what it means (max 10 words)
+Or instead of a layout, an object scene (use in at least half the scenes):
+[] 🎧 Item, 💻 Item, 📱 Item (3-5 emoji + 1-word names, real parts or features of the topic)
+@ Main product name | short tagline | one emoji
 Goal: ${$('gl').value}. Topic: ${$('tp').value}. About the presenter/business: ${$('ab').value||'n/a'}.
 Write exactly ${$('nn').value} scenes in a punchy, conversational tone. Scene 1 opens with a hook and introduces the presenter by name. ${/sell/i.test($('gl').value)?'Focus on the audience problem and benefits; the last scene is a clear call to action'+($('ct').value?': '+$('ct').value:'')+'.':'End with a memorable takeaway.'}`;
 let smp=null;
