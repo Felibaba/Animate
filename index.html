@@ -76,7 +76,7 @@ function wrap(t,w,f){g.font=f;const o=[];let l='';t.split(' ').forEach(x=>{const
 function txt(s,x,y,f,c,al='left'){g.font=f;g.fillStyle=c;g.textAlign=al;g.textBaseline='alphabetic';g.fillText(s,x,y)}
 function rr(x,y,w,h,r,fill,st,lw=2){g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(st){g.strokeStyle=st;g.lineWidth=lw;g.stroke()}}
 function mouthOpen(){if(!run||loading)return 0;if(aud)return lvl;const pulse=Math.max(0,1-(performance.now()-lastB)/160);return cl(.25+.35*Math.abs(Math.sin(performance.now()/70))+.5*pulse)}
-let lastB=0;
+let lastB=0,SD=0;
 function char(time){
  const talk=run,bob=Math.sin(time*2)*(talk?4:2),x=105,tilt=talk?Math.sin(time*3)*.05:0;
  g.save();g.fillStyle='rgba(0,0,0,.12)';g.beginPath();g.ellipse(x,792,64,8,0,0,7);g.fill();g.translate(0,bob);
@@ -109,7 +109,7 @@ function draw(){
  txt(s.k.toUpperCase()+' / 0'+(si+1),30,72,'13px ui-monospace,monospace','#6b7580');
  g.save();g.globalAlpha=pr(.1,.5);g.translate(0,(1-cu(pr(.1,.5)))*20);txt(s.t,30,138,'bold 40px system-ui,sans-serif',INK);g.restore();
  g.globalAlpha=pr(.5,.5);txt(s.sub,30,200,'19px system-ui,sans-serif','#555');g.globalAlpha=1;
- g.save();g.globalAlpha=pr(.2,.6);g.translate((1-cu(pr(.2,.6)))*-80,0);g.translate(105,900);g.scale(.82,.82);g.translate(-105,-790);char(tm);g.restore();
+ const ci=si==0?pr(.2,.6):1;g.save();g.globalAlpha=ci;g.translate((1-cu(ci))*-80,0);g.translate(105,900);g.scale(.82,.82);g.translate(-105,-790);char(tm);g.restore();
 const o0=s.h?330:290,n0=s.cards.length,bt=s.steps.length?o0+(s.steps.length-1)*78+60:s.pts.length?o0+(s.pts.length-1)*84+80:s.vs?o0+300:s.stat?o0+200:s.hub?(n0?716:640):o0,kk=Math.min(1,350/Math.max(1,bt-285));g.save();g.translate(365,245);g.scale(kk,kk);g.translate(-365,-285);
  if(s.h){g.globalAlpha=pr(.8,.4);txt(s.h,365,300,'bold 21px system-ui,sans-serif',INK,'center');g.globalAlpha=1}
  const n=s.cards.length,tw=n*64-4,sx=365-tw/2;
@@ -130,6 +130,7 @@ const oy=s.h?330:290,F='system-ui,sans-serif';
  s.pts.forEach((x,i)=>{const p=pr(.8+i*.6,.4);if(!p)return;const y=oy+i*84+(1-cu(p))*20;g.globalAlpha=p;g.fillStyle=BL;g.beginPath();g.arc(222,y+10,8,0,7);g.fill();wrap(x,280,'21px '+F).slice(0,3).forEach((l,j)=>txt(l,242,y+16+j*26,'21px '+F,INK));g.globalAlpha=1});
  if(s.vs){const p=pr(.8,.5);g.globalAlpha=p;s.vs.forEach((v,k)=>{const x=205+k*160;rr(x,oy,150,300,14,k?'#e6f0ff':'#fff',BL);let y=oy+34;wrap(v.t,126,'bold 19px '+F).forEach(l=>{txt(l,x+75,y,'bold 19px '+F,BL,'center');y+=24});y+=8;v.i.forEach((it,j)=>{g.globalAlpha=p*pr(1.2+j*.4+k*.2,.4);wrap('• '+it,126,'15px '+F).forEach(l=>{txt(l,x+12,y,'15px '+F,INK);y+=20});y+=8})});g.globalAlpha=1}
  if(s.stat){const p=pr(.8,.6),z=.6+.4*bk(p);g.save();g.globalAlpha=p;g.translate(365,oy+90);g.scale(z,z);txt(s.stat[0],0,0,'bold 64px '+F,BL,'center');g.restore();g.globalAlpha=pr(1.4,.5);wrap(s.stat[1],290,'22px '+F).forEach((l,j)=>txt(l,365,oy+150+j*30,'22px '+F,INK,'center'));g.globalAlpha=1}
+ if(SD>0){const fo=cl((SD-T)/.35);if(fo<1){g.save();g.globalAlpha=1-fo;g.fillStyle=PA;g.fillRect(20,95,W-40,120);g.fillRect(190,215,W-190,395);g.restore()}}
  // captions
  rr(205,612,320,116,18,'#fff','#c9ced4',2);g.beginPath();g.moveTo(206,650);g.lineTo(184,668);g.lineTo(206,686);g.fillStyle='#fff';g.fill();g.strokeStyle='#c9ced4';g.lineWidth=2;g.beginPath();g.moveTo(205,650);g.lineTo(184,668);g.lineTo(205,686);g.stroke();
  if(run&&words.length&&!loading){const k=Math.floor(Math.max(0,wi)/5)*5,ch=words.slice(k,k+5),f='bold 27px system-ui,sans-serif';g.font=f;let x=225,y=654;ch.forEach((w,i)=>{const ww=g.measureText(w+' ').width;if(x+ww>515&&x>225){x=225;y+=34}txt(w,x,y,f,k+i==wi?BL:INK);x+=ww})}
@@ -154,8 +155,8 @@ async function fetchAudio(text){const c=cfg(),h={'Content-Type':'application/jso
  try{const r=await fetch(ep(),{method:'POST',headers:h,body:JSON.stringify({text,length_scale:cl(+(1/+$('rt').value).toFixed(2),.5,2),gap_ms:400}),signal:ctl.signal});
   if(!r.ok){const tx=await r.text();throw new Error(r.status+' '+(/<html|<!doctype/i.test(tx)?r.statusText||'error':tx.slice(0,120)))}return await AX.decodeAudioData(await r.arrayBuffer())}finally{clearTimeout(to)}}
 const getAudio=i=>{const k=scenes[i].say+'|'+$('rt').value;return cache[k]||(cache[k]=fetchAudio(scenes[i].say).catch(e=>{delete cache[k];throw e}))};
-function playBuf(buf,g0){const src=AX.createBufferSource();src.buffer=buf;src.connect(an);aud={dur:buf.duration,t0:AX.currentTime,src};src.onended=()=>{if(g0==gen){aud=null;lvl=0;setTimeout(()=>{if(g0==gen)next()},300)}};src.start()}
-async function begin(i){const g0=++gen;aud=null;si=i;T=0;gotB=false;const s=scenes[i];words=s.say.split(/\s+/);let p=0;starts=words.map(w=>{const a=s.say.indexOf(w,p);p=a+w.length;return a});wi=0;
+function playBuf(buf,g0){const src=AX.createBufferSource();src.buffer=buf;src.connect(an);aud={dur:buf.duration,t0:AX.currentTime,src};SD=buf.duration+.3;src.onended=()=>{if(g0==gen){aud=null;lvl=0;setTimeout(()=>{if(g0==gen)next()},300)}};src.start()}
+async function begin(i){const g0=++gen;aud=null;SD=0;si=i;T=0;gotB=false;const s=scenes[i];words=s.say.split(/\s+/);let p=0;starts=words.map(w=>{const a=s.say.indexOf(w,p);p=a+w.length;return a});wi=0;
 wc=[];let a2=0;words.forEach(w=>{a2+=w.length+1;wc.push(a2)});
  if(cfg().u){loading=true;if(!i)st('Loading voice… (a sleeping server can take a minute)');
   try{const buf=await getAudio(i);if(g0!=gen||!run)return;loading=false;st('');playBuf(buf,g0);if(i+1<scenes.length)getAudio(i+1).catch(()=>{});return}
@@ -164,7 +165,7 @@ wc=[];let a2=0;words.forEach(w=>{a2+=w.length+1;wc.push(a2)});
   u.onboundary=e=>{gotB=true;lastB=performance.now();let k=0;while(k+1<starts.length&&starts[k+1]<=e.charIndex)k++;wi=k};
   u.onend=()=>{if(run&&si==i)setTimeout(next,350)};SS.speak(u)}catch(e){}}
 function next(){if(!run)return;if(si+1<scenes.length)begin(si+1);else if(rec&&rec.state=='recording'){if(ending)return;ending=true;setTimeout(()=>{ending=false;try{rec.stop()}catch(e){}stop()},700)}else stop()}
-function stop(){run=false;try{if(rec&&rec.state=='recording')rec.stop()}catch(e){}gen++;try{aud&&aud.src.stop()}catch(e){}aud=null;loading=false;lvl=0;try{SS.cancel()}catch(e){}$('go').textContent='▶ Play';si=0;T=99;wi=-1;words=[]}
+function stop(){run=false;try{if(rec&&rec.state=='recording')rec.stop()}catch(e){}gen++;try{aud&&aud.src.stop()}catch(e){}aud=null;loading=false;lvl=0;try{SS.cancel()}catch(e){}$('go').textContent='▶ Play';SD=0;si=0;T=99;wi=-1;words=[]}
 $('go').onclick=()=>{if(run){stop();return}parse();if(!scenes.length)return;try{AC()}catch(e){}run=true;$('go').textContent='⏹ Stop';begin(0)};
 $('sc').oninput=()=>{if(!run){parse();si=0;T=99}};
 function vl(){try{voices=SS.getVoices().filter(v=>/^en/i.test(v.lang));$('vo').innerHTML=voices.map((v,i)=>`<option value="${i}">${v.name}</option>`).join('')||'<option>Default voice</option>'}catch(e){}}
@@ -282,7 +283,7 @@ async function mk(){
   for(let f=0;f<nf;f++){
    const tt=f/FPS;let i=0;while(i+1<scenes.length&&tt>=t0[i+1])i++;const T0=Math.max(0,tt-t0[i]),B=bufs[i];
    if(i!=cs){cs=i;si=i;words=scenes[i].say.split(/\s+/);wc=[];let a=0;words.forEach(w=>{a+=w.length+1;wc.push(a)})}
-   T=T0;wi=Math.max(0,wc.findIndex(c=>c/wc[wc.length-1]>=cl(T0/B.duration)));
+   T=T0;SD=B.duration+.3;wi=Math.max(0,wc.findIndex(c=>c/wc[wc.length-1]>=cl(T0/B.duration)));
    let q=0,c=0;if(T0<B.duration){const o0=Math.floor((t0[i]+T0)*sr),w=Math.floor(sr/FPS);for(let k=o0;k<o0+w&&k<len;k++){q+=pcm[k]*pcm[k];c++}}
    lvl=lvl*.5+cl(Math.sqrt(q/(c||1))*6)*.5;
    VT=tt;draw();
@@ -292,7 +293,7 @@ async function mk(){
   status('work','Step 3 of 3 · Finishing MP4','Packing picture and voice into one file…',null);await ve.flush();await ae.flush();mux.finalize();
   const a=$('dl');a.href=URL.createObjectURL(new Blob([mux.target.buffer],{type:'video/mp4'}));a.download='irvin-video.mp4';a.textContent='⬇ Download irvin-video.mp4';a.style.display='inline-block';{const mb=(mux.target.buffer.byteLength/1048575).toFixed(1),dd=Math.round(tot);status('ok','Video ready ✓',Math.floor(dd/60)+':'+String(dd%60).padStart(2,'0')+' · '+mb+' MB · picture and voice in one MP4. Tap Download.',100);a.className='dlb';a.scrollIntoView({block:'nearest'})}try{a.click()}catch(e){}
  }catch(e){status('err','Could not save video',explain(e))}
- VT=null;off=false;run=false;aud=null;si=0;T=99;wi=-1;words=[];lvl=0;$('rc').disabled=$('go').disabled=false}
+ VT=null;SD=0;off=false;run=false;aud=null;si=0;T=99;wi=-1;words=[];lvl=0;$('rc').disabled=$('go').disabled=false}
 $('rc').onclick=()=>window.VideoEncoder&&window.AudioEncoder?mk():recLive();
 parse();T=99;
 </script></body></html>
