@@ -11,26 +11,15 @@
 html,body{height:100%;margin:0;background:var(--page);font-family:Georgia,"Times New Roman",serif}
 body{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 0 28px;min-height:100%}
 svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
-.cap{text-align:center;color:var(--ink)}
-.cap h1{margin:0;font-size:clamp(22px,6vw,34px);font-weight:400;font-style:italic}
-.cap p{margin:4px 0 0;color:var(--muted);font-size:12px;letter-spacing:.16em;text-transform:uppercase}
 .fb{transform-box:fill-box}
 .head{transform-origin:236px 285px;animation:sway 3.6s ease-in-out infinite alternate}
 @keyframes sway{from{transform:rotate(-1.8deg)}to{transform:rotate(1.8deg)}}
-.blink{transform-origin:50% 50%;animation:bl 4s infinite}
+.blink{transform-origin:50% 50%;animation:bl 3.4s infinite}
 @keyframes bl{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
 .mouth{transform-origin:50% 0;animation:talk 3.2s infinite}
 @keyframes talk{0%,60%,100%{transform:scaleY(1)}8%{transform:scaleY(.5)}16%{transform:scaleY(1)}24%{transform:scaleY(.6)}32%{transform:scaleY(1)}40%{transform:scaleY(.45)}50%{transform:scaleY(.9)}}
 .wave{transform-origin:335px 345px;animation:wv 2.4s ease-in-out infinite alternate}
 @keyframes wv{from{transform:rotate(-4deg)}to{transform:rotate(7deg)}}
-.bk{transform-origin:0 40px;animation:bkk 3s ease-in-out infinite alternate}
-@keyframes bkk{from{transform:rotate(-9deg)}to{transform:rotate(-3deg)}}
-.pulse{transform-origin:50% 50%;animation:pl 2s ease-in-out infinite}
-@keyframes pl{50%{transform:scale(1.05)}}
-.vis{opacity:0;animation:vs 6s infinite}
-@keyframes vs{0%{opacity:0}4%,28%{opacity:1}33%,100%{opacity:0}}
-.fw{font:italic 17px Georgia,serif;fill:#5b2a86;text-anchor:middle;opacity:0;animation:fw 5s infinite}
-@keyframes fw{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translateY(-90px)}}
 .cp{font:italic 400 28px Georgia,serif;fill:#111;text-anchor:middle}.rec{animation:rc 1.2s steps(1) infinite}.wave2{transform-origin:165px 335px;animation:wv2 2.8s ease-in-out infinite alternate}@keyframes wv2{from{transform:rotate(4deg)}to{transform:rotate(-7deg)}}
 @keyframes rc{50%{opacity:.15}}
 @media (prefers-reduced-motion: reduce){*{animation-duration:0s!important;animation-iteration-count:1!important}}
@@ -57,13 +46,12 @@ svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
 <symbol id="hrt" overflow="visible"><path d="M0 14C-26-4-16-26 0-13C16-26 26-4 0 14Z"/></symbol>
 <clipPath id="scr"><rect x="336" y="434" width="112" height="74" rx="6"/></clipPath>
 </defs>
-<rect width="554" height="985" fill="#fdc467"/>
+<rect id="bg" width="554" height="985" fill="#fdc467"/>
 <rect y="655.5" width="554" height="330" fill="#5ac8fa"/>
 <g transform="translate(0,215.5)">
-<!-- floating words -->
-
-<!-- head -->
-<g class="head">
+<g id="fl"></g>
+<g id="cam">
+<g id="hd"><g class="head">
  <path d="M135 190C120 100 190 55 250 62C320 68 372 120 365 200C372 250 360 290 335 305L150 300C140 260 138 225 135 190Z" fill="#2a2858"/>
  <g fill="#2a2858"><circle cx="170" cy="112" r="30"/><circle cx="208" cy="88" r="30"/><circle cx="252" cy="78" r="30"/><circle cx="296" cy="88" r="30"/><circle cx="337" cy="114" r="29"/><circle cx="356" cy="258" r="24"/><circle cx="342" cy="292" r="22"/><circle cx="144" cy="250" r="20"/></g>
  <rect x="206" y="250" width="60" height="50" fill="#a55d31"/>
@@ -72,30 +60,28 @@ svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
  <path d="M158 172C160 108 200 94 240 100C290 98 316 122 313 172C300 140 270 126 235 128C200 128 176 140 158 172Z" fill="#2a2858"/>
  <path d="M236 188Q230 204 240 206" stroke="#a55d31" stroke-width="3" fill="none" stroke-linecap="round"/>
  <g class="fb blink"><ellipse cx="205" cy="178" rx="8" ry="11" fill="#1d1b3a"/><ellipse cx="268" cy="178" rx="8" ry="11" fill="#1d1b3a"/></g>
- <g stroke="#1d1b3a" stroke-width="3" fill="none" stroke-linecap="round"><path d="M193 158Q205 150 217 157"/><path d="M256 157Q268 150 280 158"/></g>
+ <g stroke="#1d1b3a" stroke-width="3" fill="none" stroke-linecap="round"><g id="bL"><path d="M193 158Q205 150 217 157"/></g><g id="bR"><path d="M256 157Q268 150 280 158"/></g></g>
  <g fill="#e8806a" opacity=".4"><circle cx="186" cy="212" r="10"/><circle cx="288" cy="212" r="10"/></g>
  <g class="fb mouth"><path d="M204 216Q236 228 270 216Q266 248 237 249Q208 248 204 216Z" fill="#fff" stroke="#d9486b" stroke-width="4" stroke-linejoin="round"/><path d="M212 228Q237 236 262 228" stroke="#e7dff0" stroke-width="2" fill="none"/></g>
-</g>
-<!-- torso -->
+</g></g>
+<g id="tz">
 <path d="M128 445C128 350 150 300 205 291L270 291C330 300 352 350 350 445Z" fill="#9d3fc8"/>
 <path d="M205 291L270 291L238 332Z" fill="#c4733f"/>
 <path d="M206 292Q214 330 240 352Q262 330 270 292" stroke="#f6c445" stroke-width="3" fill="none"/>
 <circle cx="240" cy="356" r="9" fill="#f6c445"/>
-<!-- left arm, open hand -->
-<g class="wave2">
+</g>
+<g id="aL"><g class="wave2">
  <path d="M165 335L140 420L104 346" stroke="#8f35bd" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
  <ellipse cx="94" cy="330" rx="24" ry="13" fill="#c4733f" transform="rotate(25 94 330)"/>
  <g fill="#c4733f"><ellipse cx="72" cy="314" rx="14" ry="5" transform="rotate(35 72 314)"/><ellipse cx="66" cy="327" rx="14" ry="5" transform="rotate(15 66 327)"/><ellipse cx="70" cy="339" rx="13" ry="5" transform="rotate(-8 70 339)"/><ellipse cx="110" cy="314" rx="6" ry="11" transform="rotate(-25 110 314)"/></g>
-</g>
-<!-- right arm waving -->
-<g class="wave">
+</g></g>
+<g id="aR"><g class="wave">
  <path d="M335 340L372 410L390 350" stroke="#8f35bd" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
  <ellipse cx="400" cy="334" rx="24" ry="13" fill="#c4733f" transform="rotate(-25 400 334)"/>
  <g fill="#c4733f"><ellipse cx="422" cy="318" rx="14" ry="5" transform="rotate(-35 422 318)"/><ellipse cx="428" cy="331" rx="14" ry="5" transform="rotate(-15 428 331)"/><ellipse cx="424" cy="343" rx="13" ry="5" transform="rotate(8 424 343)"/><ellipse cx="384" cy="318" rx="6" ry="11" transform="rotate(25 384 318)"/></g>
+</g></g>
 </g>
-<!-- speech caption bubble -->
-<g id="cpg" style="transition:opacity .35s"><g id="cpb"></g><text id="cap" class="cp"></text></g>
-<!-- book lying face down on the table -->
+<g id="cpg"><g id="cpb"></g><text id="cap" class="cp"></text></g>
 <ellipse cx="240" cy="506" rx="104" ry="9" fill="#000" opacity=".12"/>
 <rect x="150" y="480" width="180" height="22" rx="4" fill="#c2386a"/>
 <rect x="150" y="484" width="180" height="14" fill="#fff4e8"/>
@@ -104,7 +90,6 @@ svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
 <path d="M178 452H194L170 480H150Z" fill="#c2386a"/>
 <rect x="228" y="460" width="38" height="12" rx="2" fill="#fff4e8"/>
 <path d="M233 463v6M237 463v6M240 463v6M245 463v6M248 463v6M253 463v6M257 463v6M261 463v6" stroke="#333" stroke-width="1.5"/>
-<!-- camera -->
 <ellipse cx="446" cy="515" rx="62" ry="6" fill="#000" opacity=".12"/>
 <g transform="translate(392,432) scale(.62) translate(-322,-392)">
 <rect x="362" y="378" width="46" height="22" rx="6" fill="#3b3d4d"/>
@@ -134,25 +119,29 @@ svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
 <div class="r"><button id="tt">Test voice</button><select id="vo" aria-label="Browser voice"></select></div>
 <small>Text is sent in small pieces, one request at a time, with automatic retries. Empty URL = browser voice (preview only). Saving a video needs your server. It can return audio directly, or JSON with a url / audio_url.</small></details>
 <script>
-const cap=document.getElementById('cap'),g=document.getElementById('cpg'),NS='http://www.w3.org/2000/svg';
-function setCaption(t){const L=[];let c='';
- for(const w of t.split(' ')){if(c&&(c+' '+w).length>17){L.push(c);c=w}else c=(c?c+' ':'')+w}
- if(c)L.push(c);cap.textContent='';
- const y0=135-(L.length-1)*10;
- L.forEach((l,i)=>{const ts=document.createElementNS(NS,'tspan');ts.setAttribute('x',456);ts.setAttribute('y',y0+i*20);ts.textContent=l;cap.appendChild(ts)})}
-function show(t){g.style.opacity=0;setTimeout(()=>{setCaption(t);g.style.opacity=1},350)}
-// Sample captions: replace these with your own lines, or call say('your text') to set one.
-const lines=['Hey bookworms! Welcome back to my reading nook.','Today’s pick is a cozy fantasy you won’t put down.','Plot twist: it’s my favorite read of the year!','Tell me what I should read next!'];
-let i=0,auto=setInterval(()=>{i=(i+1)%lines.length;show(lines[i])},4500);
-setCaption(lines[0]);
-window.say=t=>{clearInterval(auto);show(t)};
-</script>
-<script>
 (()=>{
-const $=i=>document.getElementById(i),svg=$('s'),capEl=$('cap'),cg=$('cpg'),NS='http://www.w3.org/2000/svg',cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),mouth=svg.querySelector('.mouth'),AN='.head,.blink,.mouth,.wave,.wave2,.fw,.rec',SS=window.speechSynthesis;
-clearInterval(auto);cg.style.transition='none';
+const $=i=>document.getElementById(i),svg=$('s'),capEl=$('cap'),cg=$('cpg'),NS='http://www.w3.org/2000/svg',cl=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),mouth=svg.querySelector('.mouth'),AN='.head,.blink,.mouth,.wave,.wave2,.rec',SS=window.speechSynthesis;
 let AX,an,run=false,gen=0,aud=null,lvl=0,parts=[],cache={},busy=false,stopF=false,bw=[],wi=-1,voices=[],lastB=0,loading=false,ck='',ms=null,dlu=null;
+let ex=0,qq=0,hl=0,z=1,lp=-2,mood='',pi=-1;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+/* ---- liveliness: expressions, nods, gestures, zoom punch-ins, floating hearts, mood backgrounds ---- */
+const moodOf=t=>/!/.test(t)?'e':/\?/.test(t)?'q':'';
+const A=(id,v)=>$(id).setAttribute('transform',v);
+const BG=['#fdc467','#ffc2d4','#bfe6ff','#d9f2b8'],ZT=[1.06,1.16,1.1,1.2],HC=['#ef5d8a','#9d3fc8','#f6c445','#ffffff'],fl=$('fl');
+for(let k=0;k<9;k++){const u=document.createElementNS(NS,'use');u.setAttribute('href','#hrt');u.setAttribute('fill',HC[k%4]);fl.appendChild(u)}
+function pose(T,l){
+ ex+=((mood=='e')-ex)*.15;qq+=((mood=='q')-qq)*.15;hl+=(Math.min(l,.6)-hl)*.04;
+ if(pi!==lp){lp=pi;if(pi>=0)z+=.08;$('bg').setAttribute('fill',BG[pi<0?0:pi%4])}
+ z+=((pi<0?1:ZT[pi%4]+ex*.04)+Math.sin(T*.3)*.01-z)*.06;
+ A('cam','translate(277 360) scale('+z.toFixed(4)+') translate(-277 -360)');
+ A('hd','translate(0 '+(Math.sin(T*1.1)*1.2-hl*1.5).toFixed(2)+') rotate('+(Math.sin(T*.9)*hl*1.2+qq*5).toFixed(2)+' 236 285)');
+ A('tz','translate(0 445) scale(1 '+(1+Math.sin(T*1.6)*.007+hl*.006).toFixed(4)+') translate(0 -445)');
+ A('bL','translate(0 '+(-(ex*6+qq*2)).toFixed(2)+') rotate('+(-ex*4).toFixed(2)+' 205 155)');
+ A('bR','translate(0 '+(-(ex*6+qq*8)).toFixed(2)+') rotate('+(ex*4-qq*8).toFixed(2)+' 268 155)');
+ A('aL','rotate('+(-ex*6-hl*6*Math.sin(T*1.9)).toFixed(2)+' 165 335)');
+ A('aR','rotate('+(ex*8+hl*7*Math.sin(T*1.6)).toFixed(2)+' 335 345)');
+ for(let k=0;k<9;k++){const p=((T*.14+k/9)%1+1)%1,e=fl.children[k];e.setAttribute('transform','translate('+(40+(k*61)%470+Math.sin(T*.9+k)*16).toFixed(1)+' '+(720-p*680).toFixed(1)+') scale('+(.5+(k%3)*.25)+')');e.setAttribute('opacity',(Math.sin(p*Math.PI)*.75).toFixed(2))}
+}
 function pages(ws){const o=[];let s=0,n=0;ws.forEach((w,i)=>{if(n&&n+w.length+1>48){o.push(s);s=i;n=0}n+=w.length+1});o.push(s);return o}
 function cap(ws,w){const key=w+'|'+ws.join(' ');if(key==ck)return;ck=key;const ps=pages(ws);let k=0;ps.forEach((p,i)=>{if(w>=p)k=i});const a=ps[k],b=ps[k+1]??ws.length,L=[];let ln=[],n=0;
  for(let i=a;i<b;i++){if(ln.length&&n+ws[i].length>24){L.push(ln);ln=[];n=0}ln.push(i);n+=ws[i].length+1}if(ln.length)L.push(ln);
@@ -161,7 +150,7 @@ function cap(ws,w){const key=w+'|'+ws.join(' ');if(key==ck)return;ck=key;const p
  const bx=$('cpb'),sp=[...capEl.children];bx.textContent='';let q=0;
  L.forEach(l=>{let x0=1e9,x1=-1e9,t0=1e9,t1=-1e9;l.forEach(()=>{const b=sp[q++].getBBox();x0=Math.min(x0,b.x);x1=Math.max(x1,b.x+b.width);t0=Math.min(t0,b.y);t1=Math.max(t1,b.y+b.height)});
   const r=document.createElementNS(NS,'rect');r.setAttribute('x',x0-14);r.setAttribute('y',t0-4);r.setAttribute('width',x1-x0+28);r.setAttribute('height',t1-t0+8);r.setAttribute('rx',10);r.setAttribute('fill','#fff');bx.appendChild(r)})}
-function mouthSet(l){const k=l==null?'':'s'+l.toFixed(2);if(k==ms)return;ms=k;if(l==null){mouth.style.animation='';mouth.style.transform=''}else{mouth.style.animation='none';mouth.style.transform='scaleY('+(1-.5*l)+')'}}
+function mouthSet(l){const k=l==null?'':'s'+l.toFixed(2)+'|'+ex.toFixed(2);if(k==ms)return;ms=k;if(l==null){mouth.style.animation='';mouth.style.transform=''}else{mouth.style.animation='none';mouth.style.transform='scale('+(1+ex*.1-l*.1).toFixed(3)+','+(.25+.9*l).toFixed(3)+')'}}
 function parse(){const M=+$('ch').value,bl=$('sc').value.trim().split(/\n\s*\n/).map(s=>s.replace(/\s+/g,' ').trim()).filter(Boolean);parts=[];
  bl.forEach(b=>{let c='';(b.match(/[^.!?]+[.!?]*\s*/g)||[b]).forEach(s=>{s=s.trim();if(!s)return;while(s.length>M){let k=s.lastIndexOf(' ',M);if(k<M*.5)k=M;if(c){parts.push(c);c=''}parts.push(s.slice(0,k).trim());s=s.slice(k).trim()}if(c&&c.length+s.length+1>M){parts.push(c);c=''}c=c?c+' '+s:s});if(c)parts.push(c)})}
 function status(k,t,d,p){const e=$('sp');e.hidden=false;e.dataset.k=k;$('sl').textContent=t;$('sd').textContent=d||'';$('sb').style.width=(p==null?100:p)+'%';$('sb').className=p==null&&k=='work'?'ind':'';$('sx').textContent=p==null?'':Math.round(p)+'%'}
@@ -178,26 +167,27 @@ let Q=Promise.resolve();
 async function tryFetch(t){for(let a=0;;a++){try{const r=await fetchAudio(t);if(a)$('sp').hidden=true;return r}catch(e){if(a>=2||/^40[0-5]/.test(String(e.message))||stopF)throw e;status('work','Server busy \u00b7 retrying','Waiting a moment before trying again\u2026',null);await sleep(1500*(a+1))}}}
 const getAudio=i=>{const k=parts[i]+'|'+$('rt').value+'|'+cfg().u;if(cache[k])return cache[k];const t=parts[i],p=Q.catch(()=>{}).then(()=>sleep(250)).then(()=>tryFetch(t));Q=p;return cache[k]=p.catch(e=>{delete cache[k];throw e})};
 const wcOf=ws=>{let a=0;return ws.map(w=>a+=w.length+1)};
-function tick(){requestAnimationFrame(tick);if(busy)return;
- if(aud){const f=cl((AX.currentTime-aud.t0)/aud.dur);wi=Math.max(0,aud.wc.findIndex(c=>c/aud.wc.at(-1)>=f));const d=new Uint8Array(an.fftSize);an.getByteTimeDomainData(d);let q=0;for(const v of d)q+=((v-128)/128)**2;lvl=lvl*.5+cl(Math.sqrt(q/d.length)*6)*.5;mouthSet(lvl)}
- else if(run&&!loading){mouthSet(performance.now()-lastB<250?.3+.5*Math.abs(Math.sin(performance.now()/70)):.1)}else mouthSet(null);
+function tick(){requestAnimationFrame(tick);if(busy)return;let L=0;
+ if(aud){const f=cl((AX.currentTime-aud.t0)/aud.dur);wi=Math.max(0,aud.wc.findIndex(c=>c/aud.wc.at(-1)>=f));const d=new Uint8Array(an.fftSize);an.getByteTimeDomainData(d);let q=0;for(const v of d)q+=((v-128)/128)**2;lvl=lvl*.5+cl(Math.sqrt(q/d.length)*6)*.5;L=lvl;mouthSet(lvl)}
+ else if(run&&!loading){const b=performance.now()-lastB<250;L=b?.6:.1;mouthSet(b?.3+.5*Math.abs(Math.sin(performance.now()/70)):.1)}else mouthSet(null);
+ pose(performance.now()/1000,L);
  if(run&&loading)cap(['Loading','voice\u2026'],-1);else if(run&&bw.length)cap(bw,wi);else if(!run)cap(['Type','your','script','below,','then','press','Play','\u25B6'],-1)}
 requestAnimationFrame(tick);
 const browser=(i)=>new Promise(res=>{if(!SS){res();return}SS.cancel();const t=parts[i],u=new SpeechSynthesisUtterance(t);u.rate=+$('rt').value;const v=voices[$('vo').value];if(v)u.voice=v;const st=[];let p=0;bw.forEach(w=>{const a=t.indexOf(w,p);st.push(a);p=a+w.length});
  u.onboundary=e=>{lastB=performance.now();let k=0;while(k+1<st.length&&st[k+1]<=e.charIndex)k++;wi=k};u.onend=u.onerror=()=>res();SS.speak(u)});
-async function speak(i,g0){bw=parts[i].split(' ');wi=0;const wc=wcOf(bw);
+async function speak(i,g0){bw=parts[i].split(' ');wi=0;pi=i;mood=moodOf(parts[i]);const wc=wcOf(bw);
  if(cfg().u){loading=true;let buf;try{buf=await getAudio(i)}catch(e){loading=false;if(g0!=gen)return;status('err','Voice server problem \u00b7 using the browser voice',explain(e));return browser(i)}
   loading=false;if(g0!=gen)return;if(i+1<parts.length)getAudio(i+1).catch(()=>{});
   await new Promise(res=>{const s=AX.createBufferSource();s.buffer=buf;s.connect(an);aud={dur:buf.duration,t0:AX.currentTime,wc,s};s.onended=()=>{aud=null;res()};s.start()});await sleep(350)}
  else await browser(i)}
-function stop(){gen++;run=false;try{aud&&aud.s.stop()}catch(e){}aud=null;loading=false;lvl=0;try{SS&&SS.cancel()}catch(e){}$('go').textContent='\u25B6 Play';bw=[];wi=-1}
+function stop(){gen++;run=false;try{aud&&aud.s.stop()}catch(e){}aud=null;loading=false;lvl=0;pi=-1;mood='';try{SS&&SS.cancel()}catch(e){}$('go').textContent='\u25B6 Play';bw=[];wi=-1}
 async function play(){if(busy)return;if(run){stop();return}parse();if(!parts.length){status('err','Nothing to say yet','Type your script first.');$('sc').focus();return}
  AC();$('sp').hidden=true;run=true;const g0=++gen;$('go').textContent='\u23F9 Stop';for(let i=0;i<parts.length&&g0==gen;i++)await speak(i,g0);if(g0==gen)stop()}
 function btns(d){$('go').disabled=$('rc').disabled=d;$('cx').hidden=!d}
 async function loadMux(){if(window.Mp4Muxer)return;for(const v of['5.1.3','5.0.1']){try{await new Promise((ok,no)=>{const e=document.createElement('script');e.src='https://cdn.jsdelivr.net/npm/mp4-muxer@'+v+'/build/mp4-muxer.js';e.onload=ok;e.onerror=no;document.head.appendChild(e)});if(window.Mp4Muxer)return}catch(e){}}throw new Error('Could not load the MP4 muxer (internet needed)')}
 async function snap(x,S,Hh){const c=svg.cloneNode(true),L=svg.querySelectorAll(AN),C=c.querySelectorAll(AN);
  L.forEach((e,i)=>{const s=getComputedStyle(e);C[i].style.cssText='animation:none;transform:'+s.transform+';transform-origin:'+s.transformOrigin+';transform-box:'+s.transformBox+';opacity:'+s.opacity});
- const st=document.createElementNS(NS,'style');st.textContent='.fw{font:italic 17px Georgia,serif;fill:#5b2a86;text-anchor:middle}.cp{font:italic 400 28px Georgia,serif;fill:#111;text-anchor:middle}';c.insertBefore(st,c.firstChild);c.removeAttribute('style');c.setAttribute('width',S);c.setAttribute('height',Hh);c.setAttribute('preserveAspectRatio','xMidYMid slice');
+ const st=document.createElementNS(NS,'style');st.textContent='.cp{font:italic 400 28px Georgia,serif;fill:#111;text-anchor:middle}';c.insertBefore(st,c.firstChild);c.removeAttribute('style');c.setAttribute('width',S);c.setAttribute('height',Hh);c.setAttribute('preserveAspectRatio','xMidYMid slice');
  const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(c));await im.decode();x.drawImage(im,0,0,S,Hh)}
 async function save(){if(run||busy)return;parse();if(!parts.length){status('err','Nothing to say yet','Type your script first.');return}
  if(!cfg().u){status('err','Add your voice server first','The browser voice can\u2019t be saved into a video. Open \u201CVoice server\u201D below.');$('vs').open=true;return}
@@ -220,21 +210,21 @@ async function save(){if(run||busy)return;parse();if(!parts.length){status('err'
   for(let f=0;f<nf;f++){if(stopF)throw new Error('Cancelled');const tt=f/FPS;let i=0;while(i+1<parts.length&&tt>=t0[i+1])i++;const lt=tt-t0[i],B=bufs[i],ws=parts[i].split(' '),wc=wcOf(ws);
    bw=ws;wi=lt<0||lt>B.duration?(lt<0?0:ws.length-1):Math.max(0,wc.findIndex(c=>c/wc.at(-1)>=lt/B.duration));
    let q=0,c=0;if(lt>=0&&lt<B.duration){const o=Math.floor(tt*sr),w=Math.floor(sr/FPS);for(let k=o;k<o+w&&k<len;k++){q+=pcm[k]*pcm[k];c++}}
-   lv=lv*.5+cl(Math.sqrt(q/(c||1))*6)*.5;mouthSet(lv);cap(bw,wi);document.getAnimations().forEach(a=>{a.currentTime=tt*1000});
+   lv=lv*.5+cl(Math.sqrt(q/(c||1))*6)*.5;pi=i;mood=moodOf(parts[i]);pose(tt,lv);mouthSet(lv);cap(bw,wi);document.getAnimations().forEach(a=>{a.currentTime=tt*1000});
    await snap(x,S,Hh);const fr=new VideoFrame(cv,{timestamp:Math.round(f*1e6/FPS),duration:Math.round(1e6/FPS)});ve.encode(fr,{keyFrame:f%60==0});fr.close();
    if(f%6==0){status('work','Step 2 of 3 \u00b7 Rendering video','Frame '+f+' of '+nf+'. Keep this tab open.',f/nf*100);await sleep(0);while(ve.encodeQueueSize>20)await sleep(5)}}
   status('work','Step 3 of 3 \u00b7 Finishing MP4','Packing picture and voice into one file\u2026',null);await ve.flush();await ae.flush();mux.finalize();
   if(dlu)URL.revokeObjectURL(dlu);dlu=URL.createObjectURL(new Blob([mux.target.buffer],{type:'video/mp4'}));const a=$('dl');a.href=dlu;a.download='book-influencer.mp4';a.textContent='\u2B07 Download MP4';a.hidden=false;
   const dd=Math.round(tot);status('ok','Video ready \u2713',Math.floor(dd/60)+':'+String(dd%60).padStart(2,'0')+' \u00b7 '+(mux.target.buffer.byteLength/1048575).toFixed(1)+' MB \u00b7 picture and voice in one MP4.',100);try{a.click()}catch(e){}
  }catch(e){status(e.message=='Cancelled'?'work':'err',e.message=='Cancelled'?'Cancelled':'Could not save video',e.message=='Cancelled'?'Nothing was saved.':explain(e))}
- document.getAnimations().forEach(a=>a.play());mouthSet(null);ms=null;bw=[];wi=-1;ck='';busy=false;btns(false);try{wl&&wl.release()}catch(e){}}
+ document.getAnimations().forEach(a=>a.play());pi=-1;mood='';mouthSet(null);ms=null;bw=[];wi=-1;ck='';busy=false;btns(false);try{wl&&wl.release()}catch(e){}}
 $('go').onclick=play;$('rc').onclick=save;$('cx').onclick=()=>{stopF=true};
 $('tt').onclick=async()=>{$('tt').disabled=true;try{AC();status('work','Testing your voice server','Calling '+ep()+' (a sleeping server can take a minute)\u2026',null);const b=await fetchAudio('Hi, this is my new voice.');const s=AX.createBufferSource();s.buffer=b;s.connect(an);s.start();status('ok','Voice server works \u2713','Got '+b.duration.toFixed(1)+' s of audio. You should hear it now.',100)}catch(e){status('err','Voice test failed',explain(e))}$('tt').disabled=false};
 function vl(){try{voices=SS.getVoices().filter(v=>/^en/i.test(v.lang));$('vo').innerHTML=voices.map((v,i)=>'<option value="'+i+'">'+v.name+'</option>').join('')||'<option>Default voice</option>'}catch(e){}}
 vl();try{SS.onvoiceschanged=vl}catch(e){}
 const info=()=>{parse();const n=($('sc').value.trim().match(/\S+/g)||[]).length;$('cn').textContent=n?n+' words \u00b7 about '+Math.max(1,Math.round(n/2.5/+$('rt').value))+' s \u00b7 '+parts.length+' voice request'+(parts.length==1?'':'s'):''};
 const lsg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lss=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
-$('sc').value=lsg('bi_sc')||'Hey bookworms! Welcome back to my reading nook. Today I\u2019m sharing a cozy fantasy you won\u2019t be able to put down.';$('tu').value=lsg('bi_tu')||'';$('tk').value=lsg('bi_tk')||'';
+$('sc').value=lsg('bi_sc')||'Hey bookworms! Welcome back to my reading nook. Today I\u2019m sharing a cozy fantasy you won\u2019t be able to put down. Can you guess the title?';$('tu').value=lsg('bi_tu')||'';$('tk').value=lsg('bi_tk')||'';
 $('ch').value=lsg('bi_ch')||'160';$('ch').onchange=()=>{lss('bi_ch',$('ch').value);info()};$('sc').oninput=()=>{lss('bi_sc',$('sc').value);info()};$('rt').oninput=info;$('tu').oninput=()=>lss('bi_tu',$('tu').value);$('tk').oninput=()=>lss('bi_tk',$('tk').value);
 $('sc').onkeydown=e=>{if((e.ctrlKey||e.metaKey)&&e.key=='Enter'){e.preventDefault();play()}};
 window.say=t=>{$('sc').value=t;info();play()};info();
