@@ -81,7 +81,6 @@ svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
  <g fill="#c4733f"><ellipse cx="422" cy="318" rx="14" ry="5" transform="rotate(-35 422 318)"/><ellipse cx="428" cy="331" rx="14" ry="5" transform="rotate(-15 428 331)"/><ellipse cx="424" cy="343" rx="13" ry="5" transform="rotate(8 424 343)"/><ellipse cx="384" cy="318" rx="6" ry="11" transform="rotate(25 384 318)"/></g>
 </g></g>
 </g>
-<g id="cpg"><g id="cpb"></g><text id="cap" class="cp"></text></g>
 <ellipse cx="240" cy="506" rx="104" ry="9" fill="#000" opacity=".12"/>
 <rect x="150" y="480" width="180" height="22" rx="4" fill="#c2386a"/>
 <rect x="150" y="484" width="180" height="14" fill="#fff4e8"/>
@@ -104,6 +103,7 @@ svg{width:min(94vw,340px);height:auto;border-radius:24px;flex:none}
 <g fill="#25262f"><circle cx="472" cy="410" r="7"/><circle cx="472" cy="432" r="7"/><circle cx="472" cy="454" r="7"/><circle cx="472" cy="476" r="7"/></g>
 <circle class="rec" cx="472" cy="500" r="7" fill="#f0314f"/>
 </g>
+<g id="cpg"><g id="cpb"></g><text id="cap" class="cp"></text></g>
 </g>
 </svg>
 <div class="pn"><b>What should she say?</b>
@@ -145,7 +145,7 @@ function pose(T,l){
 function pages(ws){const o=[];let s=0,n=0;ws.forEach((w,i)=>{if(n&&n+w.length+1>48){o.push(s);s=i;n=0}n+=w.length+1});o.push(s);return o}
 function cap(ws,w){const key=w+'|'+ws.join(' ');if(key==ck)return;ck=key;const ps=pages(ws);let k=0;ps.forEach((p,i)=>{if(w>=p)k=i});const a=ps[k],b=ps[k+1]??ws.length,L=[];let ln=[],n=0;
  for(let i=a;i<b;i++){if(ln.length&&n+ws[i].length>24){L.push(ln);ln=[];n=0}ln.push(i);n+=ws[i].length+1}if(ln.length)L.push(ln);
- capEl.textContent='';const y0=570-(L.length-1)*22;
+ capEl.textContent='';const y0=578;
  L.forEach((l,r)=>l.forEach((i,j)=>{const t=document.createElementNS(NS,'tspan');if(!j){t.setAttribute('x',277);t.setAttribute('y',y0+r*44)}t.textContent=ws[i]+(j<l.length-1?' ':'');if(i==w){t.setAttribute('fill','#d81b60')}capEl.appendChild(t)}));
  const bx=$('cpb'),sp=[...capEl.children];bx.textContent='';let q=0;
  L.forEach(l=>{let x0=1e9,x1=-1e9,t0=1e9,t1=-1e9;l.forEach(()=>{const b=sp[q++].getBBox();x0=Math.min(x0,b.x);x1=Math.max(x1,b.x+b.width);t0=Math.min(t0,b.y);t1=Math.max(t1,b.y+b.height)});
