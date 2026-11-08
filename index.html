@@ -31,7 +31,7 @@ small{color:var(--mut)}[hidden]{display:none!important}
 <div class="pn"><b>What should he say?</b>
 <textarea id="sc" aria-label="Script"></textarea><small id="cn"></small>
 <div class="r"><button class="a" id="go">▶ Play</button><button id="rc">⏺ Save video</button><select id="ql" aria-label="Video size"><option value="684">684×720</option><option value="1080">1080×1138 (HD)</option></select></div>
-<div class="r"><small>Speed</small><input type="range" id="rt" min=".7" max="1.4" step=".05" value="1" style="flex:1" aria-label="Speech speed"></div>
+<div class="r"><small>Speed</small><input type="range" id="rt" min=".6" max="1.4" step=".05" value=".8" style="flex:1" aria-label="Speech speed"><small id="rl" style="min-width:84px;text-align:right"></small></div>
 <div id="sp" hidden><div class="r" style="justify-content:space-between"><b id="sl"></b><span id="sx"></span></div><div class="bar"><i id="sb"></i></div><small id="sd"></small><div class="r"><a id="dl" class="dl" hidden></a><button id="cx" hidden>Cancel</button></div></div></div>
 <details class="pn" id="vs"><summary><b>🔊 Voice server</b> <small>(your TTS API, optional)</small></summary>
 <input type="text" id="tu" placeholder="https://YOUR-SERVER.onrender.com/tts" autocapitalize="off" autocorrect="off">
@@ -236,8 +236,8 @@ async function speak(i,g0){
  currentSentence=parts[i]||'';
  if(cfg().u){let buf;try{status('work','Getting voice','Contacting your server\u2026',null);buf=await getAudio(i);$('sp').hidden=true}catch(e){if(g0!=gen)return;status('err','Voice server problem \u00b7 using the browser voice',explain(e));return browser(i)}
   if(g0!=gen)return;if(i+1<parts.length)getAudio(i+1).catch(()=>{});const ws=parts[i].split(' '),wc=wcOf(ws);
-  await new Promise(res=>{const s=AX.createBufferSource();s.buffer=buf;s.connect(an);aud={dur:buf.duration,t0:AX.currentTime,wc,ws,s,k:-1};s.onended=()=>{aud=null;res()};s.start()});await sleep(300)}
- else await browser(i)}
+  await new Promise(res=>{const s=AX.createBufferSource();s.buffer=buf;s.connect(an);aud={dur:buf.duration,t0:AX.currentTime,wc,ws,s,k:-1};s.onended=()=>{aud=null;res()};s.start()});await sleep(450)}
+ else{await browser(i);await sleep(450)}}
 function stop(){gen++;run=false;try{aud&&aud.s.stop()}catch(e){}aud=null;try{SS&&SS.cancel()}catch(e){}cur='';$('go').textContent='\u25B6 Play'}
 async function play(){if(busy)return;if(run){stop();return}parse();if(!parts.length){status('err','Nothing to say yet','Type your script first.');return}
  AC();$('sp').hidden=true;run=true;const g0=++gen;$('go').textContent='\u23F9 Stop';for(let i=0;i<parts.length&&g0==gen;i++)await speak(i,g0);if(g0==gen){await sleep(500);stop()}}
@@ -283,7 +283,7 @@ function vl(){try{voices=SS.getVoices().filter(v=>/^en/i.test(v.lang));$('vo').i
 const lsg=k=>{try{return localStorage.getItem(k)}catch(e){return null}},lss=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 $('sc').value=lsg('th_sc')||'Most people think small. Think bigger! Think in systems. What if you could build something that lasts? Imagine the future. Then just start.';$('tu').value=lsg('th_tu')||'';$('tk').value=lsg('th_tk')||'';
 const info=()=>{parse();const n=($('sc').value.match(/\S+/g)||[]).length;$('cn').textContent=n?n+' words \u00b7 about '+Math.max(1,Math.round(n/2.5/+$('rt').value))+' s':''};
-$('sc').oninput=()=>{lss('th_sc',$('sc').value);info()};$('rt').oninput=info;$('tu').oninput=()=>lss('th_tu',$('tu').value);$('tk').oninput=()=>lss('th_tk',$('tk').value);info();
+$('sc').oninput=()=>{lss('th_sc',$('sc').value);info()};const rl=()=>{const v=+$('rt').value;$('rl').textContent=(v<.75?'Slow':v<.95?'Relaxed':v<1.15?'Normal':'Fast')+' \u00b7 '+v.toFixed(2)+'\u00d7'};rl();$('rt').oninput=()=>{info();rl()};$('tu').oninput=()=>lss('th_tu',$('tu').value);$('tk').oninput=()=>lss('th_tk',$('tk').value);info();
 const im=$('src');const go=()=>{img=im;if(glOK)try{initGL(im)}catch(e){glOK=false}requestAnimationFrame(loop)};
 const wt=e=>e.complete?Promise.resolve():new Promise(r=>e.onload=r);Promise.all([wt(im),wt($('hmk'))]).then(()=>document.fonts?document.fonts.load('900 60px Rubik').catch(()=>{}):0).then(go);
 })();
